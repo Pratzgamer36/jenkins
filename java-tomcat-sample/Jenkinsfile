@@ -1,7 +1,7 @@
 pipeline {
     agent any;
     options {
-    copyArtifactPermission('Deploy_Application_StagingEnvironment,Deploy_Application_Production_Environment');
+    copyArtifactPermission('*');
 }
     stages {
         stage('Build Application') {
