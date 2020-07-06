@@ -11,7 +11,11 @@ pipeline {
             post {
                 success {
                     echo "Now Archiving the Artifacts...."
-                    archiveArtifacts artifacts: '**/*.war'
+                    archiveArtifacts artifacts: '**/*.war' fingerprint: true
+                    always {
+                      emailext body: 'A Test EMail', recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], subject: 'Test'
+                    }
+
                 }
             }
         }
@@ -19,6 +23,11 @@ pipeline {
             steps{
                 build job: 'Deploy_Application_StagingEnvironment'
 
+            }
+            post {
+                always {
+                emailext body: 'Deployed', recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], subject: 'Test'
+                }
             }
 
         }
@@ -28,6 +37,11 @@ pipeline {
                     input message:'Approve PRODUCTION Deployment?'
                 }
                 build job: 'Deploy_Application_Production_Environment'
+            }
+            post {
+                always {
+                emailext body: 'Deployed to production', recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], subject: 'Test'
+                }
             }
         }
     }
